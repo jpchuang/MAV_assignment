@@ -5,22 +5,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import time
+from PIL import Image
 
 # Initiate timer
 start_time = time.time()
 
 # Global variables
-template_size = 180  # template resizing
+template_size = 300  # template resizing
 invariance_size = 300  # invariance image resizing
 min_matching = 15  # minimum number of keypoint areas
 
 # Read the matching template and the testing image in grayscale
-img_template = cv2.imread("matching_template_3.png", cv2.IMREAD_GRAYSCALE)
+img_template = cv2.imread(
+    "figures/matching_template_3.png", cv2.IMREAD_GRAYSCALE)
 # resize the template image
 img_template = cv2.resize(img_template, (template_size, template_size))
-img_test = cv2.imread("test_data.png", cv2.IMREAD_GRAYSCALE)
+img_test = cv2.imread("figures/test_data.png", cv2.IMREAD_GRAYSCALE)
 
-# Addition of test images to check scale and rotational invariance
+# Addition of test images to check scale and rotational invariance - also done for time testing
 img_test_invariance = cv2.pyrDown(img_test)
 nrows, ncols = img_test_invariance.shape[:2]
 
@@ -30,11 +32,15 @@ rotation_matrix = cv2.getRotationMatrix2D((ncols/2, nrows/2), 45, 1)
 img_test_invariance = cv2.warpAffine(
     img_test_invariance, rotation_matrix, (ncols, nrows))
 
+# resize
 img_test_invariance = cv2.resize(
     img_test_invariance, (invariance_size, invariance_size))
 
 # display transformed image for testing purposes
 # plt.imshow(img_test_invariance), plt.show()
+
+# usage of the manipulated images - uncomment to test variety of manipulations
+# img_test = img_test_invariance
 
 # Initiate SURF detection method
 # larger value filters more extensively (500-1000 value)
@@ -97,6 +103,8 @@ print("--- %s seconds ---" % (time.time() - start_time))
 
 # Print total number of matching points between the training and query images
 print("\nNumber of Matching Keypoints Between The Training and Query Images: ", len(matches))
+print("\nNumber of Keypoints - template detected ", len(kp_template))
+print("\nNumber of Keypoints - test detected ", len(kp_test))
 
 # Draw the figure that includes the template image and the testing image
 img_result = cv2.drawMatches(
