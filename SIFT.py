@@ -10,15 +10,18 @@ import time
 start_time = time.time()
 
 # Global variables
-template_size = 300  # template resizing
+template_size = 360  # template resizing
+test_size = 360
 invariance_size = 300  # invariance image resizing
 min_matching = 15  # minimum number of keypoint areas
 
 # Read the matching template and the testing image in grayscale
 img_template = cv2.imread(
-    "figures/matching_template_3.png", cv2.IMREAD_GRAYSCALE)
+    "figures/matching_template.png", cv2.IMREAD_GRAYSCALE)
 img_template = cv2.resize(img_template, (template_size, template_size))
-img_test = cv2.imread("figures/test_data.png", cv2.IMREAD_GRAYSCALE)
+img_test = cv2.imread("figures/test_data_2.png", cv2.IMREAD_GRAYSCALE)
+img_test = cv2.resize(img_test, (test_size, test_size))
+
 
 # Addition of test images to check scale and rotational invariance - also done for time testing
 img_test_invariance = cv2.pyrDown(img_test)
@@ -71,12 +74,14 @@ if len(inliers) > min_matching:
     M, mask = cv2.findHomography(img_template_kp, img_test_kp, cv2.RANSAC, 5.0)
     matchesMask = mask.ravel().tolist()
 
-    h, w = img_template.shape
-    pts = np.float32([[0, 0], [0, h-1], [w-1, h-1], [w-1, 0]]
+    # obtain points from the reference image - use of data excel given
+    pts = np.float32([[110, 147], [233, 156], [226, 264], [96, 269]]
                      ).reshape(-1, 1, 2)
     dst = cv2.perspectiveTransform(pts, M)
+
+    # draw polylines based on the perspective transform on the test image to draw an estimated box
     img_test = cv2.polylines(
-        img_test, [np.int32(dst)], True, 255, 3, cv2.LINE_AA)
+        img_test, [np.int32(dst)], True, 0, 3, cv2.LINE_AA)
 else:
     print("Not enough matches are found")
     matchesMask = None

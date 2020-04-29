@@ -9,4 +9,10 @@ This repository contains 2 python files and a map with figures that contains the
 
 The figure map only contains two figures that were tested. In case of more thorough testing, additional figure files should be uploaded in this map to test the detection algorithm.  
 
+## The SURF.py
+The python script of SURF.py contains two functions: one to process the SURF method on the template and test image and the second is to obtain the True Positive values (TP) and False Positive values (FP) to obtain the given ratios for a set of given data images. In the main, a SURF example is conducted which can be run immediately after cloning this repo. A commented section in the main is created to obtain the ROC curve. 
+
+## The SIFT.py
+The SIFT.py contains a simple variant of the SURF.py which only processes the SIFT method in order to compare the computational efforts of both methods, which is discussed in the essay. 
+
 
